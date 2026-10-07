@@ -17,12 +17,23 @@ function Navbar() {
   };
 
   const botonBase =
-    "px-4 py-2 rounded-lg text-sm font-medium transition cursor-pointer";
+    "px-3 py-2 sm:px-4 rounded-lg text-sm font-medium transition cursor-pointer whitespace-nowrap";
 
   return (
     <nav className="bg-emerald-700 text-white shadow-md">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <div>
+      <div
+        className="
+          max-w-7xl mx-auto
+          px-4 sm:px-6
+          py-4
+          flex flex-col
+          md:flex-row
+          md:items-center
+          md:justify-between
+          gap-4
+        "
+      >
+        <div className="text-center md:text-left">
           <h2 className="text-2xl font-bold">
             Farmacia
           </h2>
@@ -32,7 +43,16 @@ function Navbar() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div
+          className="
+            w-full md:w-auto
+            flex flex-wrap
+            items-center
+            justify-center
+            md:justify-end
+            gap-2
+          "
+        >
           <button
             onClick={() => navigate("/home")}
             className={`${botonBase} hover:bg-emerald-600`}
@@ -94,7 +114,16 @@ function Navbar() {
 
           <button
             onClick={cerrarSesion}
-            className="ml-3 px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-sm font-semibold transition cursor-pointer"
+            className="
+              px-3 py-2 sm:px-4
+              rounded-lg
+              bg-red-500
+              hover:bg-red-600
+              text-sm font-semibold
+              transition
+              cursor-pointer
+              whitespace-nowrap
+            "
           >
             Cerrar sesión
           </button>

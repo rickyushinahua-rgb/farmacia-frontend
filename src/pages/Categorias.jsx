@@ -94,7 +94,6 @@ function Categorias() {
 
       limpiarFormulario();
       setMostrarFormulario(false);
-
       await cargarCategorias();
     } catch (error) {
       setMensaje(
@@ -134,7 +133,6 @@ function Categorias() {
       await api.delete(`/categorias/${id}`);
 
       setMensaje("Categoría eliminada correctamente");
-
       await cargarCategorias();
     } catch (error) {
       setMensaje(
@@ -148,15 +146,15 @@ function Categorias() {
     <div className="min-h-screen bg-slate-100">
       <Navbar />
 
-      <main className="max-w-7xl mx-auto px-6 py-10">
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          <div className="flex items-center justify-between mb-6">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 lg:p-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
               <p className="text-sm font-semibold text-emerald-600 uppercase tracking-wide">
                 Organización de productos
               </p>
 
-              <h1 className="text-3xl font-bold text-slate-800 mt-2">
+              <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 mt-2">
                 Categorías
               </h1>
 
@@ -168,7 +166,7 @@ function Categorias() {
             {!mostrarFormulario && (
               <button
                 onClick={abrirNuevaCategoria}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-xl font-semibold transition cursor-pointer"
+                className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-xl font-semibold transition cursor-pointer"
               >
                 Nueva categoría
               </button>
@@ -184,9 +182,9 @@ function Categorias() {
           {mostrarFormulario && (
             <form
               onSubmit={guardarCategoria}
-              className="mb-8 bg-slate-50 border border-slate-200 rounded-xl p-6"
+              className="mb-8 bg-slate-50 border border-slate-200 rounded-xl p-4 sm:p-6"
             >
-              <div className="flex items-center justify-between mb-5">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
                 <h2 className="text-xl font-bold text-slate-800">
                   {modoEdicion
                     ? "Editar categoría"
@@ -196,7 +194,7 @@ function Categorias() {
                 <button
                   type="button"
                   onClick={cancelarFormulario}
-                  className="text-slate-500 hover:text-red-600 font-medium cursor-pointer"
+                  className="self-start sm:self-auto text-slate-500 hover:text-red-600 font-medium cursor-pointer"
                 >
                   Cancelar
                 </button>
@@ -234,7 +232,7 @@ function Categorias() {
 
               <button
                 type="submit"
-                className="mt-6 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-semibold transition cursor-pointer"
+                className="w-full sm:w-auto mt-6 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-semibold transition cursor-pointer"
               >
                 {modoEdicion
                   ? "Actualizar categoría"
@@ -243,25 +241,15 @@ function Categorias() {
             </form>
           )}
 
-          <div className="overflow-x-auto rounded-xl border border-slate-200">
+          {/* TABLET Y COMPUTADORA */}
+          <div className="hidden md:block overflow-x-auto rounded-xl border border-slate-200">
             <table className="w-full text-left">
               <thead className="bg-slate-100">
                 <tr>
-                  <th className="px-6 py-4">
-                    ID
-                  </th>
-
-                  <th className="px-6 py-4">
-                    Nombre
-                  </th>
-
-                  <th className="px-6 py-4">
-                    Descripción
-                  </th>
-
-                  <th className="px-6 py-4">
-                    Acciones
-                  </th>
+                  <th className="px-6 py-4">ID</th>
+                  <th className="px-6 py-4">Nombre</th>
+                  <th className="px-6 py-4">Descripción</th>
+                  <th className="px-6 py-4">Acciones</th>
                 </tr>
               </thead>
 
@@ -310,6 +298,56 @@ function Categorias() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* CELULAR */}
+          <div className="md:hidden space-y-4">
+            {categorias.map((categoria) => (
+              <div
+                key={categoria.id_categoria}
+                className="border border-slate-200 rounded-2xl p-4 bg-white"
+              >
+                <p className="text-xs font-semibold text-emerald-600 uppercase">
+                  Categoría #{categoria.id_categoria}
+                </p>
+
+                <h3 className="text-lg font-bold text-slate-800 mt-1 break-words">
+                  {categoria.nombre}
+                </h3>
+
+                <div className="mt-4">
+                  <p className="text-xs font-semibold text-slate-500 uppercase">
+                    Descripción
+                  </p>
+
+                  <p className="text-sm text-slate-600 mt-1 break-words">
+                    {categoria.descripcion}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 mt-5">
+                  <button
+                    onClick={() =>
+                      editarCategoria(categoria)
+                    }
+                    className="bg-blue-500 hover:bg-blue-600 text-white py-2.5 rounded-lg text-sm font-semibold cursor-pointer"
+                  >
+                    Editar
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      eliminarCategoria(
+                        categoria.id_categoria
+                      )
+                    }
+                    className="bg-red-500 hover:bg-red-600 text-white py-2.5 rounded-lg text-sm font-semibold cursor-pointer"
+                  >
+                    Eliminar
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
 
           <p className="mt-5 text-sm text-slate-500">

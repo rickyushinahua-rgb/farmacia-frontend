@@ -17,13 +17,13 @@ function Productos() {
     id_categoria: "",
   });
 
+  const obtenerToken = () => localStorage.getItem("token");
+
   const cargarProductos = async () => {
     try {
-      const token = localStorage.getItem("token");
-
       const response = await api.get("/productos", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${obtenerToken()}`,
         },
       });
 
@@ -41,7 +41,10 @@ function Productos() {
       const response = await api.get("/categorias");
       setCategorias(response.data);
     } catch (error) {
-      console.error("Error al cargar categorías");
+      console.error(
+        "Error al cargar categorías:",
+        error
+      );
     }
   };
 
@@ -81,8 +84,6 @@ function Productos() {
   };
 
   const crearProducto = async () => {
-    const token = localStorage.getItem("token");
-
     await api.post(
       "/productos",
       {
@@ -93,7 +94,7 @@ function Productos() {
       },
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${obtenerToken()}`,
         },
       }
     );
@@ -102,8 +103,6 @@ function Productos() {
   };
 
   const actualizarProducto = async () => {
-    const token = localStorage.getItem("token");
-
     await api.put(
       `/productos/${productoEditando}`,
       {
@@ -114,7 +113,7 @@ function Productos() {
       },
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${obtenerToken()}`,
         },
       }
     );
@@ -145,7 +144,6 @@ function Productos() {
 
       limpiarFormulario();
       setMostrarFormulario(false);
-
       await cargarProductos();
     } catch (error) {
       setMensaje(
@@ -184,16 +182,13 @@ function Productos() {
     }
 
     try {
-      const token = localStorage.getItem("token");
-
       await api.delete(`/productos/${id}`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${obtenerToken()}`,
         },
       });
 
       setMensaje("Producto eliminado correctamente");
-
       await cargarProductos();
     } catch (error) {
       setMensaje(
@@ -207,15 +202,15 @@ function Productos() {
     <div className="min-h-screen bg-slate-100">
       <Navbar />
 
-      <main className="max-w-7xl mx-auto px-6 py-10">
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          <div className="flex items-center justify-between mb-6">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 lg:p-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
               <p className="text-sm font-semibold text-emerald-600 uppercase tracking-wide">
                 Gestión de inventario
               </p>
 
-              <h1 className="text-3xl font-bold text-slate-800 mt-2">
+              <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 mt-2">
                 Productos
               </h1>
 
@@ -227,7 +222,7 @@ function Productos() {
             {!mostrarFormulario && (
               <button
                 onClick={abrirNuevoProducto}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-xl font-semibold transition cursor-pointer"
+                className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-xl font-semibold transition cursor-pointer"
               >
                 Nuevo producto
               </button>
@@ -243,9 +238,9 @@ function Productos() {
           {mostrarFormulario && (
             <form
               onSubmit={guardarProducto}
-              className="mb-8 bg-slate-50 border border-slate-200 rounded-xl p-6"
+              className="mb-8 bg-slate-50 border border-slate-200 rounded-xl p-4 sm:p-6"
             >
-              <div className="flex items-center justify-between mb-5">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
                 <h2 className="text-xl font-bold text-slate-800">
                   {modoEdicion
                     ? "Editar producto"
@@ -255,7 +250,7 @@ function Productos() {
                 <button
                   type="button"
                   onClick={cancelarFormulario}
-                  className="text-slate-500 hover:text-red-600 font-medium cursor-pointer"
+                  className="self-start sm:self-auto text-slate-500 hover:text-red-600 font-medium cursor-pointer"
                 >
                   Cancelar
                 </button>
@@ -334,7 +329,7 @@ function Productos() {
 
               <button
                 type="submit"
-                className="mt-6 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-semibold transition cursor-pointer"
+                className="w-full sm:w-auto mt-6 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-semibold transition cursor-pointer"
               >
                 {modoEdicion
                   ? "Actualizar producto"
@@ -343,7 +338,8 @@ function Productos() {
             </form>
           )}
 
-          <div className="overflow-x-auto rounded-xl border border-slate-200">
+          {/* ESCRITORIO Y TABLET */}
+          <div className="hidden md:block overflow-x-auto rounded-xl border border-slate-200">
             <table className="w-full text-left">
               <thead className="bg-slate-100">
                 <tr>
@@ -409,6 +405,76 @@ function Productos() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* CELULAR */}
+          <div className="md:hidden space-y-4">
+            {productos.map((producto) => (
+              <div
+                key={producto.id_producto}
+                className="border border-slate-200 rounded-2xl p-4 sm:p-5 bg-white"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold text-emerald-600 uppercase">
+                      Producto #{producto.id_producto}
+                    </p>
+
+                    <h3 className="text-lg font-bold text-slate-800 mt-1 break-words">
+                      {producto.nombre}
+                    </h3>
+                  </div>
+
+                  <span className="shrink-0 bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-semibold">
+                    Stock: {producto.stock}
+                  </span>
+                </div>
+
+                <div className="mt-4 space-y-3 text-sm">
+                  <div className="flex justify-between gap-4">
+                    <span className="text-slate-500">
+                      Precio
+                    </span>
+
+                    <span className="font-semibold text-slate-800">
+                      S/ {producto.precio}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between gap-4">
+                    <span className="text-slate-500">
+                      Categoría
+                    </span>
+
+                    <span className="font-semibold text-emerald-700 text-right break-words">
+                      {producto.categoria?.nombre}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 mt-5">
+                  <button
+                    onClick={() =>
+                      editarProducto(producto)
+                    }
+                    className="bg-blue-500 hover:bg-blue-600 text-white py-2.5 rounded-lg text-sm font-semibold cursor-pointer"
+                  >
+                    Editar
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      eliminarProducto(
+                        producto.id_producto
+                      )
+                    }
+                    className="bg-red-500 hover:bg-red-600 text-white py-2.5 rounded-lg text-sm font-semibold cursor-pointer"
+                  >
+                    Eliminar
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
 
           <p className="mt-5 text-sm text-slate-500">
